@@ -1,6 +1,7 @@
 package com.velocitypowered.crossstitch.mixin.command;
 
 import com.mojang.brigadier.arguments.ArgumentType;
+import com.velocitypowered.crossstitch.CrossStitch;
 import io.netty.buffer.Unpooled;
 import net.minecraft.command.argument.ArgumentTypes;
 import net.minecraft.network.PacketByteBuf;
@@ -21,7 +22,8 @@ public class CommandTreeSerializationMixin {
             packetByteBuf.writeIdentifier(new Identifier(""));
             return;
         }
-        if (entry.id.getNamespace().equals("minecraft") || entry.id.getNamespace().equals("brigadier")) {
+        if ((entry.id.getNamespace().equals("minecraft") || entry.id.getNamespace().equals("brigadier")) &&
+                !CrossStitch.getUnsupportedNames().contains(entry.id.toString())) {
             packetByteBuf.writeIdentifier(entry.id);
             entry.serializer.toPacket(type, packetByteBuf);
             return;
